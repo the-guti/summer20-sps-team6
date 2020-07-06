@@ -20,19 +20,25 @@
     </script> 
 </head>
 
-<body>
+<body onload="loadParty()">
     <div id="header"></div>
-    <h1>
-        Create new playlist
-    </h1>
+    <h1 id="partyName">Name of the party</h1>
 
-    <div class="container h-100 d-flex justify-content-center">
-        <div class="text-center border border-light p-5">
-            <p class="h4 mb-4">Enter party name:</p>
-            <input type="text" id="partyName" name="partyName" class="form-control mb-4" placeholder="Awesome playlist" />
-            <button class="btn btn-dark btn-block" onclick="createParty()">Create</button>
-        </div>
+    <!--COMMENTS-->
+    <h2>Comments</h2>
+    
+    <div id="comments-container">
+        
     </div>
+
+    <!--SUBMIT COMMENT-->
+    <form action="/comment" method="POST">
+        <p>Comment here:</p>
+        <input type="hidden" id="party-id" value="bar" />
+        <textarea name="text-comment" placeholder="Enter yout comment here"></textarea>
+        <br/><br/>
+        <input type="submit" />
+    </form>
 
 
     <script src="assets/js/script.js"></script>
