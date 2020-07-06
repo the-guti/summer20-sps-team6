@@ -33,8 +33,10 @@
 
     <!--SUBMIT COMMENT-->
     <form action="/comment" method="POST">
+        <input type="hidden" id="party-id" name="party-id" value="bar" />
+        <p>Your name:</p>
+        <textarea name="name-comment" placeholder="Toph Beifong"></textarea>
         <p>Comment here:</p>
-        <input type="hidden" id="party-id" value="bar" />
         <textarea name="text-comment" placeholder="Enter yout comment here"></textarea>
         <br/><br/>
         <input type="submit" />

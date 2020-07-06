@@ -34,7 +34,7 @@ public class JoinPartyServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
         id = Long.toString(entity.getKey().getId());
         name = (String) entity.getProperty("name");
-        if(partyId == id) break;
+        if(partyId.equals(id)) break;
     }
 
     response.setContentType("application/json; charset=UTF-8;");
