@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Test 1</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script
+        src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous">
+    </script>
+    <script> 
+        $(function(){
+            $("#header").load("assets/html/header.html");
+            $("#footer").load("assets/html/footer.html");
+        });
+    </script> 
+</head>
+
+<body onload="showLoginBasedContent();">
+    <div id="header"></div>
+    <div id="user-edit-content">
+        <h2>Update your Account!</h2>
+        <!-- TODO Show User's current values too -->
+        <p>Change what you want and click Update Info!
+        <form action="/userInfo" method="POST">
+            <b>Email: </b><input type="text" name="email">
+            <br/><br/>
+            <b>Display Name:</b><input type="text" name="display-name">
+            <br/><br/>
+            <input type="submit" value="Update Info!"/>
+        </form>
+    </div>
+</body>
+</html>

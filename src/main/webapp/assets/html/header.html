@@ -31,10 +31,15 @@
                    Example name
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="#">Settings</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Sign out</a>
+                    <!-- TODO Find a better way of showing logged-in based content -->
+                    <a class="dropdown-item show-logged-out" href="/login">Login</a>
+                    <a class="dropdown-item show-logged-out"
+                       href="/login?destination-url=/create_account.html">Create Account</a>
+                    <!-- TODO change profile link from "/userInfo", currently for debugging purposes only -->
+                    <a class="dropdown-item show-logged-in" href="/userInfo">Profile</a>
+                    <a class="dropdown-item show-logged-in" href="/edit_account.html">Settings</a>
+                    <div class="dropdown-divider show-logged-in"></div>
+                    <a class="dropdown-item show-logged-in" href="/logout">Sign out</a>
                 </div>
             </li>
         </ul>
