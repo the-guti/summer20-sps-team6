@@ -24,7 +24,7 @@ public class Requests {
      */
     public static boolean hasParameter(HttpServletRequest request, String parameterName) {
         String parameterValue = request.getParameter(parameterName);
-        return parameterValue == null;
+        return parameterValue != null;
     }
 
     /**
