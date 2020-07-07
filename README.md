@@ -9,3 +9,8 @@ Alejandro Guti - agutierrezguillen@sps-program.com
 Karol - kgutierrezsuarez1@sps-program.com
 
 Reggie - rfrank@sps-program.com
+
+## TODO
+
+* Standardize java import order.
+* Optimize javascript import locations
