@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.utils.Requests;
 
 /**
  * Uses UserService to logout the current user and foward them to a desired page
@@ -23,7 +24,7 @@ public class LogoutServlet extends HttpServlet {
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String destinationURL = getDestinationUrl(request);
+        String destinationURL = Requests.getParameter(request, "destination-url", "/");
         String redirectURL;
         if (userService.isUserLoggedIn()) {
             redirectURL = userService.createLogoutURL(destinationURL);
@@ -31,14 +32,5 @@ public class LogoutServlet extends HttpServlet {
             redirectURL = destinationURL;
         }
         response.sendRedirect(redirectURL);
-    }
-
-    private String getDestinationUrl(HttpServletRequest request) {
-        String destinationURL = request.getParameter("destination-url");
-        if (destinationURL == null) {
-            return "/";
-        } else {
-            return destinationURL;
-        }
     }
 }
