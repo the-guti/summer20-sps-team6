@@ -99,4 +99,3 @@ async function showLoginBasedContent() {
         showClass("show-logged-out");
     }
 }
->>>>>>> master
