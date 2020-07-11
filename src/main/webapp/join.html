@@ -25,10 +25,14 @@
     <h1>
         Join party
     </h1>
-    <p>
-        Party ID:
-    </p>
 
+    <div class="container h-100 d-flex justify-content-center">
+        <form class="text-center border border-light p-5" action="/" method="POST">
+            <p class="h4 mb-4">Enter Party ID</p>
+            <input type="text" id="partyId" name="partyId" class="form-control mb-4" placeholder="0123456">
+            <button class="btn btn-dark btn-block" type="submit">Join</button>
+        </form>
+    </div>
 
     <script src="assets/js/script.js"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
