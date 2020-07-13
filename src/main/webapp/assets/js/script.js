@@ -26,6 +26,12 @@ function getComments(id){
             });
 }
 
+function joinParty(){
+    const partyId = document.getElementById("partyId").value;
+    if(partyId.length == 0) return;
+    window.location.href = '/party.html?id=' + partyId;
+}
+
 function loadParty(){
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
