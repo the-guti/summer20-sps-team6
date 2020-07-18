@@ -12,9 +12,12 @@ function createParty(){
 
 function getComments(id){
     const commentsContainer = document.getElementById('comments-container');
-    fetch('/comment?id='+id)
+    window.setInterval(function(){
+        url = '/comment?id='+id
+        fetch(url)
             .then(response => response.json())
             .then(comments => {
+                console.log(comments)
                 commentsContainer.innerHTML = "";
                 commentsContainer.innerHTML = "";
                 for (let i = 0; i < comments.length; i++){
@@ -24,6 +27,7 @@ function getComments(id){
                     commentsContainer.appendChild(comment);
                 }
             });
+      }, 2000);
 }
 
 function joinParty(){
