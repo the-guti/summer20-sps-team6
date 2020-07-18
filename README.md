@@ -14,3 +14,5 @@ Reggie - rfrank@sps-program.com
 
 * Standardize java import order.
 * Optimize javascript import locations
+* Musicmatch API for lyrics https://developer.musixmatch.com/ 
+* Add Genius APi for anotations https://genius.com/developers 
