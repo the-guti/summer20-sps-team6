@@ -105,3 +105,13 @@ async function showLoginBasedContent() {
         showClass("show-logged-out");
     }
 }
+
+/**
+ * Requests the current time in a song that's playing in the given roomId
+ * Note JavaScript UTC time is the same as GMT time
+ */
+async function getMsTimeInCurrentSong(partyId) {
+    const response = await fetch("/musicPlayer?party-id=" + partyId);
+    const currentYoutubeSongPlayInfo = await response.json();
+    return Date.now() - currentYoutubeSongPlayInfo.songStartGmtTimeMs;
+}
