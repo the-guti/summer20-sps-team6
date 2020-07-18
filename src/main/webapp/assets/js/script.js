@@ -26,6 +26,12 @@ function getComments(id){
             });
 }
 
+function joinParty(){
+    const partyId = document.getElementById("partyId").value;
+    if(partyId.length == 0) return;
+    window.location.href = '/party.html?id=' + partyId;
+}
+
 function loadParty(){
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -98,4 +104,14 @@ async function showLoginBasedContent() {
     } else {
         showClass("show-logged-out");
     }
+}
+
+/**
+ * Requests the current time in a song that's playing in the given roomId
+ * Note JavaScript UTC time is the same as GMT time
+ */
+async function getMsTimeInCurrentSong(partyId) {
+    const response = await fetch("/musicPlayer?party-id=" + partyId);
+    const currentYoutubeSongPlayInfo = await response.json();
+    return Date.now() - currentYoutubeSongPlayInfo.songStartGmtTimeMs;
 }
