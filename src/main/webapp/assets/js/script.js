@@ -25,6 +25,7 @@ function getComments(id){
                     comment.classList.add("comment");  
                     commentsContainer.appendChild(comment);
                 }
+                commentsContainer.scrollTop = 9999999
             });
       }, 2000);
 }
@@ -76,7 +77,7 @@ function sendComment(){
             body: "[]"  
         })
         .then(function(){
-            document.getElementById("user_comment").value = ""
+            document.getElementById("user_comment").value = "";
         })
     }else{
         console.log("nothing to send")
