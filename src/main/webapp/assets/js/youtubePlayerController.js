@@ -36,7 +36,7 @@ function getStartTime() {
     })
     ;
 }
-currentVideoId = 0;
+currentVideoId = 0;     // index
 
 var videoIds = [
     'dQw4w9WgXcQ',      // Song id: Never gonna give you up
@@ -57,6 +57,7 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event){
+    console.log(getPlayerState());
     // Check if playing video ended
     if(getPlayerState() === 0){ 
         console.log("ENDED");
@@ -66,6 +67,25 @@ function onPlayerStateChange(event){
             player.loadVideoById(videoIds[currentVideoId]);
         }
     }
+}
+/*
+    YoutubeSong song;
+    long songStartGmtTimeMs;
+    boolean stopped;
+*/
+
+async function syncManager(){
+    // Call the Servlet
+
+    // Get info, youtube song play info
+
+    // Do action accordingly, call local player functions
+    
+    // Sleep for 1000
+    await sleep(1000); // avoid showing content until content exists
+
+    // Call itself again to loop
+
 }
 
 function getDuration(){
@@ -78,13 +98,37 @@ function getPlayerState(){
 }
 
 function pauseVideo(){
-    player.pauseVideo();
+    player.pauseVideo();    
 }
 
 function playVideo(){
     player.playVideo();
 }
 
+function seekTo(startTime){
+    player.seekTo(startTime,true);
+}
+
+// Stop the song first in the servlet, then check servelet status and stopin the player
 function stopVideo(){
     player.stopVideo();
+}
+
+var state = 'stop';
+
+function buttonPlayPress() {
+    if(state==='stop'){
+      state='play';
+      var button = d3.select("#button_play").classed('btn-success', true); 
+      button.select("i").attr('class', "fa fa-pause");  
+    }
+    else if(state==='play' || state==='resume'){
+      state = 'pause';
+      d3.select("#button_play i").attr('class', "fa fa-play"); 
+    }
+    else if(state==='pause'){
+      state = 'resume';
+      d3.select("#button_play i").attr('class', "fa fa-pause");        
+    }
+    console.log("button play pressed, play was "+state);
 }
