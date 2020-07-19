@@ -28,7 +28,6 @@ public class JoinPartyServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    System.out.println("karol");
     String id="", name="";
     ArrayList<String> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {

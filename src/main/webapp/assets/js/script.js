@@ -17,12 +17,11 @@ function getComments(id){
         fetch(url)
             .then(response => response.json())
             .then(comments => {
-                console.log(comments)
                 commentsContainer.innerHTML = "";
                 commentsContainer.innerHTML = "";
                 for (let i = 0; i < comments.length; i++){
                     const comment = document.createElement("P");
-                    comment.innerHTML = "Name: " + comments[i].name + "<br/>Comment: " + comments[i].text;
+                    comment.innerHTML = "<b>" + comments[i].name + "</b><br/>" + comments[i].text;
                     comment.classList.add("comment");  
                     commentsContainer.appendChild(comment);
                 }
@@ -58,6 +57,32 @@ function showClass(className) {
         classElements[i].style.display = "block";
     }
 }
+
+function sendComment(){
+    const username = document.getElementById("user_name").value
+    const comment = document.getElementById("user_comment").value
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const partyId = urlParams.get('id');
+    if(username.trim() !== "" && username.trim() !== ""){
+        url = `/comment?party-id=${partyId}&username=${username}&comment=${comment}`
+        fetch(encodeURI(url),
+        {
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: "[]"  
+        })
+        .then(function(){
+            document.getElementById("user_comment").value = ""
+        })
+    }else{
+        console.log("nothing to send")
+    }
+}
+
 
 /**
  * function that returns after the set number of milliseconds
