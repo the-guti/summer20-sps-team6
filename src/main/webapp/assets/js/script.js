@@ -25,7 +25,6 @@ function getComments(id) {
                     comment.classList.add("comment");
                     commentsContainer.appendChild(comment);
                 }
-                commentsContainer.scrollTop = 9999999
             });
     }, 2000);
 }
@@ -59,6 +58,11 @@ function formatMsDurationAsMinutesAndSeconds(ms) {
         seconds = "0" + seconds;
     }
     return minutes + ":" + seconds;
+}
+
+function goToLatestComments(){
+    const commentsContainer = document.getElementById('comments-container');
+    commentsContainer.scrollTop = 9999999
 }
 
 function joinParty() {
