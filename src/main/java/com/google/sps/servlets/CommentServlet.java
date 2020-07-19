@@ -53,9 +53,9 @@ public class CommentServlet extends HttpServlet {
   // Takes incoming comments and adds them to list
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String text = getParameter(request, "text-comment", "");
+    String text = getParameter(request, "comment", "");
     String partyId = getParameter(request, "party-id", "");
-    String name = getParameter(request, "name-comment", "");
+    String name = getParameter(request, "username", "");
 
     // Add new comment only if the strings are more than just white spaces
     if(text.trim().length() > 0 && partyId.trim().length() > 0 && name.trim().length() > 0){

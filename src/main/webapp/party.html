@@ -23,27 +23,25 @@
 
 <body onload="loadParty()">
     <div id="header"></div>
-    <h1 id="partyName">Name of the party</h1>
-
-    <!-- Player -->
-    <div id="player"></div>
-    <!--COMMENTS-->
-    <h2>Comments</h2>
-    
-    <div id="comments-container">
-        
+    <div id="content">
+        <h1 id="partyName">Name of the party</h1>
+        <!-- Player -->
+        <div id="player"></div>
+        <!--COMMENTS-->
+        <h2>Comments</h2>
+        <div id="comments-container"> </div>
+        <!--SUBMIT COMMENT-->
+        <br/>
+        <div>
+            <input type="hidden" id="party-id" name="party-id" value="bar" />
+            <p>Your name:</p>
+            <textarea name="name-comment" id="user_name" placeholder="Example name"></textarea>
+            <p>Comment here:</p>
+            <textarea name="text-comment" id="user_comment" placeholder="Type your comment here..."></textarea>
+            <br/><br/>
+            <button onclick="sendComment()">Comment</button>
+        </div>
     </div>
-
-    <!--SUBMIT COMMENT-->
-    <form action="/comment" method="POST">
-        <input type="hidden" id="party-id" name="party-id" value="bar" />
-        <p>Your name:</p>
-        <textarea name="name-comment" placeholder="Toph Beifong"></textarea>
-        <p>Comment here:</p>
-        <textarea name="text-comment" placeholder="Enter yout comment here"></textarea>
-        <br/><br/>
-        <input type="submit" />
-    </form>
 
 
     <script src="assets/js/script.js"></script>
