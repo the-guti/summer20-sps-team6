@@ -14,7 +14,17 @@ body {
   height: 300px;
   overflow: scroll;
 }
+#playlist-container{ /* Currently exactly mirrors the comments-container will be changed in the future */
+    width: 30%;
+    height: 300px;
+    overflow: scroll;
+}
 .comment{
+    background-color: lightgray;
+    border-radius: 10px;
+    padding: 10px;
+}
+.song{
     background-color: lightgray;
     border-radius: 10px;
     padding: 10px;

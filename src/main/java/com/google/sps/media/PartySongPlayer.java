@@ -1,7 +1,9 @@
 package com.google.sps.media;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
 
@@ -97,6 +99,14 @@ public class PartySongPlayer {
         } else {
             return new YoutubeSongPlayInfo(currentSong, currentSongStartGmtTimeMs, isStopped);
         }
+    }
+
+    /**
+     * Returns a copy of the current playlist of songs
+     * The copy is sent so that changes to the playlist don't also effect this object
+     */
+    public synchronized final List<YoutubeSong> getCurrentPlaylist() {
+        return new ArrayList<>(playlist);
     }
 
     /**

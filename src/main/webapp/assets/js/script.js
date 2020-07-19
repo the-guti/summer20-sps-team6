@@ -1,51 +1,83 @@
-function createParty(){
+function createParty() {
     const partyName = document.getElementById("partyName").value;
-    if(partyName.length == 0) return;
+    if (partyName.length == 0) return;
 
-    fetch('/create?name='+partyName)
+    fetch('/create?name=' + partyName)
         .then(response => response.json())
         .then(data => {
-            alert("New party created: " + data.partyName+ "\nParty id: " + data.id)
+            alert("New party created: " + data.partyName + "\nParty id: " + data.id)
             window.location.href = '/party.html?id=' + data.id;
         });
 }
 
-function getComments(id){
+function getComments(id) {
     const commentsContainer = document.getElementById('comments-container');
-    window.setInterval(function(){
-        url = '/comment?id='+id
+    window.setInterval(function () {
+        url = '/comment?id=' + id
         fetch(url)
             .then(response => response.json())
             .then(comments => {
                 commentsContainer.innerHTML = "";
                 commentsContainer.innerHTML = "";
-                for (let i = 0; i < comments.length; i++){
+                for (let i = 0; i < comments.length; i++) {
                     const comment = document.createElement("P");
                     comment.innerHTML = "<b>" + comments[i].name + "</b><br/>" + comments[i].text;
-                    comment.classList.add("comment");  
+                    comment.classList.add("comment");
                     commentsContainer.appendChild(comment);
                 }
                 commentsContainer.scrollTop = 9999999
             });
-      }, 2000);
+    }, 2000);
 }
 
-function joinParty(){
+function getPlaylist(id) { // can easily be extended to update the song using the youtubePlayerController.js methods see below comment
+    // change the name to be update player if doing so
+    const playlistContainer = document.getElementById('playlist-container');
+    window.setInterval(async function () {
+        url = '/musicPlayer?party-id=' + id;
+        const response = await fetch(url);
+        const partyPlaylistState = await response.json();
+        // call some "updateYoutubePlayer(partyPlaylistState.currentSongPlayInfo)"
+        // partyPlaylistState.currentSongPlayInfo is a YoutubeSongPlayInfo object, see com.google.sps.data.YoutubeSongPlayInfo java package
+        playlistContainer.innerHTML = "";
+        const currentPlaylist = partyPlaylistState.currentPlaylist;
+        for (let i = 0; i < currentPlaylist.length; i++) {
+            const song = document.createElement("P");
+            song.innerHTML = "<b>" + currentPlaylist[i].songName + "</b><br/>Duration: "
+                + formatMsDurationAsMinutesAndSeconds(currentPlaylist[i].songDuration);
+            song.classList.add("comment");
+            playlistContainer.appendChild(song);
+        }
+        playlistContainer.scrollTop = 9999999
+    }, 2000);
+}
+
+function formatMsDurationAsMinutesAndSeconds(ms) {
+    let minutes = Math.floor(ms/60/1000).toString();
+    let seconds = (Math.floor(ms/1000) % 60).toString();
+    if (seconds.length === 1) {
+        seconds = "0" + seconds;
+    }
+    return minutes + ":" + seconds;
+}
+
+function joinParty() {
     const partyId = document.getElementById("partyId").value;
-    if(partyId.length == 0) return;
+    if (partyId.length == 0) return;
     window.location.href = '/party.html?id=' + partyId;
 }
 
-function loadParty(){
+function loadParty() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const partyId = urlParams.get('id');
-    fetch('/party?id='+partyId)
+    fetch('/party?id=' + partyId)
         .then(response => response.json())
         .then(data => {
             document.getElementById("partyName").innerHTML = data.partyName;
             document.getElementById("party-id").value = data.id;
             getComments(data.id);
+            getPlaylist(data.id);
         });
 }
 
@@ -54,32 +86,32 @@ function loadParty(){
  */
 function showClass(className) {
     const classElements = document.getElementsByClassName(className);
-    for(let i = 0; i < classElements["length"]; i++){
+    for (let i = 0; i < classElements["length"]; i++) {
         classElements[i].style.display = "block";
     }
 }
 
-function sendComment(){
+function sendComment() {
     const username = document.getElementById("user_name").value
     const comment = document.getElementById("user_comment").value
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const partyId = urlParams.get('id');
-    if(username.trim() !== "" && username.trim() !== ""){
+    if (username.trim() !== "" && username.trim() !== "") {
         url = `/comment?party-id=${partyId}&username=${username}&comment=${comment}`
         fetch(encodeURI(url),
-        {
-            headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-            },
-            method: "POST",
-            body: "[]"  
-        })
-        .then(function(){
-            document.getElementById("user_comment").value = "";
-        })
-    }else{
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: "[]"
+            })
+            .then(function () {
+                document.getElementById("user_comment").value = "";
+            })
+    } else {
         console.log("nothing to send")
     }
 }
@@ -99,7 +131,7 @@ function sleep(ms) {
  */
 async function defineCurrentUserCache() {
     const response = await fetch('/userInfo');
-    if(response.ok){
+    if (response.ok) {
         getCurrentUser.cachedUser = await response.json();
     } else {
         getCurrentUser.cachedUser = null;
@@ -111,7 +143,7 @@ async function defineCurrentUserCache() {
  * If no user is logged in, return null
  */
 async function getCurrentUser() {
-    if(getCurrentUser.cachedUser === undefined){
+    if (getCurrentUser.cachedUser === undefined) {
         await defineCurrentUserCache();
     }
     return getCurrentUser.cachedUser;
@@ -129,7 +161,7 @@ async function isUserLoggedIn() {
 // TODO find better way to wait for content to exist
 async function showLoginBasedContent() {
     await sleep(100); // avoid showing content until content exists
-    if(await isUserLoggedIn()) {
+    if (await isUserLoggedIn()) {
         showClass("show-logged-in");
     } else {
         showClass("show-logged-out");
@@ -143,5 +175,5 @@ async function showLoginBasedContent() {
 async function getMsTimeInCurrentSong(partyId) {
     const response = await fetch("/musicPlayer?party-id=" + partyId);
     const currentYoutubeSongPlayInfo = await response.json();
-    return Date.now() - currentYoutubeSongPlayInfo.songStartGmtTimeMs;
+    return Date.now() - currentYoutubeSongPlayInfo.currentSongPlayInfo.songStartGmtTimeMs;
 }
