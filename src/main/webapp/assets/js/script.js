@@ -25,9 +25,13 @@ function getComments(id){
                     comment.classList.add("comment");  
                     commentsContainer.appendChild(comment);
                 }
-                commentsContainer.scrollTop = 9999999
             });
       }, 2000);
+}
+
+function getLatestComments(){
+    const commentsContainer = document.getElementById('comments-container');
+    commentsContainer.scrollTop = 9999999
 }
 
 function joinParty(){

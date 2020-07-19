@@ -13,6 +13,8 @@ body {
   width: 30%;
   height: 300px;
   overflow: scroll;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .comment{
     background-color: lightgray;
