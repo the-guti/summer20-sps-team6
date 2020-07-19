@@ -13,6 +13,8 @@ body {
   width: 30%;
   height: 300px;
   overflow: scroll;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 #playlist-container{ /* Currently exactly mirrors the comments-container will be changed in the future */
     width: 30%;
