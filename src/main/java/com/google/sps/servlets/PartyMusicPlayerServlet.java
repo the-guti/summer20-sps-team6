@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.sps.data.PartyPlaylistState;
 import com.google.sps.data.YoutubeSongPlayInfo;
 import com.google.sps.media.PartySongPlayer;
 import com.google.sps.media.YoutubeSong;
@@ -41,7 +43,6 @@ public class PartyMusicPlayerServlet extends HttpServlet {
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("Get Request");
         long partyId;
         try {
             partyId = Long.parseLong(Requests.getParameter(request, "party-id", null));
@@ -56,13 +57,15 @@ public class PartyMusicPlayerServlet extends HttpServlet {
             Parties.createOrReplacePartySongPlayer(partyId);
         }
         YoutubeSongPlayInfo currentSongInfo = Parties.getPartySongPlayer(partyId).getCurrentSongInformation();
+        List<YoutubeSong> currentPlaylist = Parties.getPartySongPlayer(partyId).getCurrentPlaylist();
+        PartyPlaylistState currentPlayerInfo = new PartyPlaylistState(currentSongInfo, currentPlaylist);
         if (currentSongInfo == null){
             response.setStatus(200);
             return;
         } else {
-            String songPlayStatusJson = gson.toJson(currentSongInfo);
+            String songPlaylistStatusJson = gson.toJson(currentPlayerInfo);
             response.setContentType("application/json;");
-            response.getWriter().println(songPlayStatusJson);
+            response.getWriter().println(songPlaylistStatusJson);
         }
     }
 
