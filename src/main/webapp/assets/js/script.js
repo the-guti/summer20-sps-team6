@@ -79,7 +79,6 @@ function loadParty() {
         .then(response => response.json())
         .then(data => {
             document.getElementById("partyName").innerHTML = data.partyName;
-            document.getElementById("party-id").value = data.id;
             getComments(data.id);
             getPlaylist(data.id);
         });
