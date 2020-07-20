@@ -21,7 +21,7 @@
     <link rel="icon" href="assets/images/record.ico">
 </head>
 
-<body onload="loadParty()">
+<body onload="loadParty(); showLoginBasedContent();">
     <div id="header"></div>
     <div id="content">
         <h1 id="partyName">Name of the party</h1>
@@ -37,9 +37,9 @@
         <!--SUBMIT COMMENT-->
         <br/>
         <div>
-            <input type="hidden" id="party-id" name="party-id" value="bar" />
-            <p>Your name:</p>
-            <textarea name="name-comment" id="user_name" placeholder="Example name"></textarea>
+            <input type="hidden" id="party-id" name="party-id" value="bar" class="show-logged-out" />
+            <p class="show-logged-out">Your name:</p>
+            <textarea name="name-comment" id="user_name" placeholder="Example name" class="show-logged-out" ></textarea>
             <p>Comment here:</p>
             <textarea name="text-comment" id="user_comment" placeholder="Type your comment here..."></textarea>
             <br/><br/>
