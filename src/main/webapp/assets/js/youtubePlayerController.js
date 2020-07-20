@@ -19,7 +19,7 @@ function onYouTubeIframeAPIReady() {
             'modestbranding': 1,    // Hide youtube branding
             'rel': 0,               // Do not show related videos
             'showinfo': 0,          // Hide current song information
-        },
+        }, 
         events: {
             'onReady': onPlayerReady,               // First start
             'onStateChange': onPlayerStateChange    // Actual looping
@@ -27,29 +27,8 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-var startTime = 0;
-function getStartTime() {
-    fetch('/musicControler')
-    .then(response => response.text())
-    .then((time) => {
-        startTime = parseInt(time);
-    })
-    ;
-}
-currentVideoId = 0;     // index
-
-var videoIds = [
-    'dQw4w9WgXcQ',      // Song id: Never gonna give you up
-    'a01QQZyl-_I',      // Song id: Queen - Under Pressure
-    'zO6D_BAuYCI',      // Song id  Queen - Crazy Little Thing Called Love 
-    'HgzGwKwLmgM',      // Song id: Queen - Don't Stop Me Now
-    'azdwsXLmrHE',      // Song id: Queen - Radio Ga Ga
-    'f4Mc-NYPHaQ',      // Song id: Queen - I Want To Break Free
-    'KXw8CRapg7k'       // Song id: Queen - We Are The Champions
-];
-
 function onPlayerReady(event) {  
-    event.target.loadVideoById(videoIds[currentVideoId], 200);
+    event.target.loadVideoById("XwxLwG2_Sxk");
 }
 
 function onPlayerStateChange(event){
