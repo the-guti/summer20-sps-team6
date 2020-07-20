@@ -37,8 +37,8 @@ function getPlaylist(id) { // can easily be extended to update the song using th
         url = '/musicPlayer?party-id=' + id;
         const response = await fetch(url);
         const partyPlaylistState = await response.json();
-        // call some "updateYoutubePlayer(partyPlaylistState.currentSongPlayInfo)"
-        // partyPlaylistState.currentSongPlayInfo is a YoutubeSongPlayInfo object, see com.google.sps.data.YoutubeSongPlayInfo java package
+        updateYoutubePlayer(partyPlaylistState.currentSongPlayInfo);
+
         playlistContainer.innerHTML = "";
         const currentPlaylist = partyPlaylistState.currentPlaylist;
         for (let i = 0; i < currentPlaylist.length; i++) {

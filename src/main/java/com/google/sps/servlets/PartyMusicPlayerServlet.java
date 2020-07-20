@@ -60,9 +60,13 @@ public class PartyMusicPlayerServlet extends HttpServlet {
         List<YoutubeSong> currentPlaylist = Parties.getPartySongPlayer(partyId).getCurrentPlaylist();
         PartyPlaylistState currentPlayerInfo = new PartyPlaylistState(currentSongInfo, currentPlaylist);
         if (currentSongInfo == null){
-            response.setStatus(200);
+            // response.setStatus(204);
+            response.setContentType("application/json;"); 
+            response.getWriter().println("{\"currentSongPlayInfo\":{\"song\":{\"songName\":\"J. Balvin - Rojo\",\"videoId\":\"5drPJOatAQg\",\"songDuration\":60000},\"songStartGmtTimeMs\":0,\"stopped\":true},\"currentPlaylist\":[{\"songName\":\"Queen - We Are The Champions\",\"videoId\":\"KXw8CRapg7k\",\"songDuration\":60000},{\"songName\":\"Queen - Radio Ga Ga\",\"videoId\":\"azdwsXLmrHE\",\"songDuration\":60000}]}"); 
+            /*"*/
             return;
         } else {
+            
             String songPlaylistStatusJson = gson.toJson(currentPlayerInfo);
             response.setContentType("application/json;");
             response.getWriter().println(songPlaylistStatusJson);
@@ -85,6 +89,7 @@ public class PartyMusicPlayerServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long partyId;
         Action action;
+        System.out.println("doPost");
         try {
             partyId = Long.parseLong(Requests.getParameter(request, "party-id", null));
             action = Action.valueOf(Requests.getParameter(request, "action", ""));
@@ -110,12 +115,14 @@ public class PartyMusicPlayerServlet extends HttpServlet {
             case ADD_SONG:
                 if (!Requests.hasParameterValue(request, "youtube-song-json")) {
                     response.setStatus(400);
+                    System.out.println("missing json param");
                     return;
                 }
                 try {
                     YoutubeSong youtubeSong = gson.fromJson(request.getParameter("youtube-song-json"), YoutubeSong.class);
                     currentPartyPlayer.addSong(youtubeSong);
                 } catch (Exception e) {
+                    System.out.println("ugly json");
                     response.setStatus(400);
                     return;
                 }

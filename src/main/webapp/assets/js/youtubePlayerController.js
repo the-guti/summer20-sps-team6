@@ -49,43 +49,124 @@ var videoIds = [
 ];
 
 function onPlayerReady(event) {  
-    event.target.loadVideoById(videoIds[currentVideoId], 210);
-    /*         
-    event.target.seekTo(startTime, true);
-    event.target.playVideo();
-    */
+    event.target.loadVideoById(videoIds[currentVideoId], 200);
 }
 
 function onPlayerStateChange(event){
     console.log(getPlayerState());
     // Check if playing video ended
-    if(getPlayerState() === 0){ 
-        console.log("ENDED");
+    /*if(getPlayerState() === 0){ 
         currentVideoId++;
         // Check if there are more videos in the queue
         if(currentVideoId < videoIds.length){
             player.loadVideoById(videoIds[currentVideoId]);
         }
+    }*/
+}
+
+function getPartyId(){
+    // Get party id 5910974510923776
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get('id');;
+}
+
+function startSyncManager(){
+    const partyId = getPartyId();
+    setInterval( function() { syncManager(partyId); }, 1000 );
+}
+
+async function syncManager(partyId){
+    // Call the Servlet
+    const response = await fetch("/musicPlayer?party-id=" + partyId);
+    
+    switch (response.status) {
+        case 200:
+            // Get info, youtube song play info ( Youtube song (S songName /S videoId /L songDuration) / L songStartGmtTimeMs  / Bool stopped)
+            const currentYoutubeSongPlayInfo = await response.json();
+            
+            if(currentYoutubeSongPlayInfo.stopped){
+                // Play?
+            }else{
+
+            }
+            
+            // Do action accordingly, call local player functions
+            //console.log(currentYoutubeSongPlayInfo);    
+            break;
+        case 400:
+            // Error message - If no room-id is given or a non-numeric room-id is given, return a 400 response code
+            break;
+        case 204:
+            // Error message  no songs
+            break;
+        default:
+            // Error
+            break;
     }
 }
-/*
-    YoutubeSong song;
-    long songStartGmtTimeMs;
-    boolean stopped;
-*/
 
-async function syncManager(){
-    // Call the Servlet
+function updateYoutubePlayer(currentSongPlayInfo){
+    const videoId = currentSongPlayInfo.song.videoId;
+    console.log("update check videoId", currentSongPlayInfo.song.videoId);
+    // Check if same video
+    if(player.getVideoData()['video_id'] != videoId){
+        // Check time
+        /*if(false){
+            seekTo(startTime);
+        }*/
+        player.loadVideoById(videoId);
+        console.log("load video");
+    }
+}
 
-    // Get info, youtube song play info
+async function addSong(){
+    const videoId = document.getElementById("song_id").value;
+    const songName = document.getElementById("song_name").value;
+    const songDuration = document.getElementById("song_duration").value;
 
-    // Do action accordingly, call local player functions
-    
-    // Sleep for 1000
-    await sleep(1000); // avoid showing content until content exists
+    var partyId = getPartyId();
+    const action = "ADD_SONG";
 
-    // Call itself again to loop
+    const youTubeSong = new Object();
+    youTubeSong.songName = songName;
+    youTubeSong.videoId = videoId;
+    youTubeSong.songDuration = songDuration;
 
+    videoId.innerHTML = "";
+    songName.innerHTML = "";
+    songDuration.innerHTML = "";
+
+    url = `/musicPlayer?party-id=${partyId}&youtube-song-json=${JSON.stringify(youTubeSong)}&action=${action}`
+        await fetch(encodeURI(url),
+        {
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: "[]"  
+        })
+        .then(function(res){ console.log(res) })
+        .catch(function(res){ console.log(res) })
+}
+
+// START_PLAYER , STOP_PLAYER , SKIP_SONG
+async function actionPlayerServlet(action){
+    var partyId = getPartyId();
+
+    url = `/musicPlayer?party-id=${partyId}&action=${action}`
+        await fetch(encodeURI(url),
+        {
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: "[]"  
+        })
+        .then(function(res){ console.log(res) })
+        .catch(function(res){ console.log(res) })
 }
 
 function getDuration(){
@@ -105,8 +186,9 @@ function playVideo(){
     player.playVideo();
 }
 
-function seekTo(startTime){
-    player.seekTo(startTime,true);
+// Uses seconds
+function seekTo(startTimeSec){
+    player.seekTo(startTimeSec,true);
 }
 
 // Stop the song first in the servlet, then check servelet status and stopin the player
@@ -132,3 +214,5 @@ function buttonPlayPress() {
     }
     console.log("button play pressed, play was "+state);
 }
+
+// startSyncManager();
