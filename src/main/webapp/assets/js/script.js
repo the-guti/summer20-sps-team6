@@ -25,7 +25,6 @@ function getComments(id) {
                     comment.classList.add("comment");
                     commentsContainer.appendChild(comment);
                 }
-                commentsContainer.scrollTop = 9999999
             });
     }, 2000);
 }
@@ -61,6 +60,11 @@ function formatMsDurationAsMinutesAndSeconds(ms) {
     return minutes + ":" + seconds;
 }
 
+function goToLatestComments(){
+    const commentsContainer = document.getElementById('comments-container');
+    commentsContainer.scrollTop = 9999999
+}
+
 function joinParty() {
     const partyId = document.getElementById("partyId").value;
     if (partyId.length == 0) return;
@@ -75,7 +79,6 @@ function loadParty() {
         .then(response => response.json())
         .then(data => {
             document.getElementById("partyName").innerHTML = data.partyName;
-            document.getElementById("party-id").value = data.id;
             getComments(data.id);
             getPlaylist(data.id);
         });
@@ -91,14 +94,19 @@ function showClass(className) {
     }
 }
 
-function sendComment() {
-    const username = document.getElementById("user_name").value
-    const comment = document.getElementById("user_comment").value
+async function sendComment() {
+    let username;
+    if ((await isUserLoggedIn()) && (await getCurrentUser())["display-name"] !== undefined) {
+        username = (await getCurrentUser())["display-name"];
+    } else {
+        username = document.getElementById("user_name").value;
+    }
+    const comment = document.getElementById("user_comment").value;
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const partyId = urlParams.get('id');
     if (username.trim() !== "" && username.trim() !== "") {
-        url = `/comment?party-id=${partyId}&username=${username}&comment=${comment}`
+        url = `/comment?party-id=${partyId}&username=${username}&comment=${comment}`;
         fetch(encodeURI(url),
             {
                 headers: {
@@ -160,7 +168,9 @@ async function isUserLoggedIn() {
  */
 // TODO find better way to wait for content to exist
 async function showLoginBasedContent() {
-    await sleep(100); // avoid showing content until content exists
+    while(document.getElementsByClassName("show-logged-in").length < 4) {
+        await sleep(100); // avoid showing content until content exists
+    }
     if (await isUserLoggedIn()) {
         showClass("show-logged-in");
     } else {
