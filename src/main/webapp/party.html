@@ -21,7 +21,7 @@
     <link rel="icon" href="assets/images/record.ico">
 </head>
 
-<body onload="loadParty()">
+<body onload="loadParty(); showLoginBasedContent();">
     <div id="header"></div>
     <div id="content">
         <h1 id="partyName">Name of the party</h1>
@@ -44,7 +44,7 @@
         <!--SUBMIT COMMENT-->
         <br/>
         <div>
-            <div class="form-group">
+            <div class="form-group show-logged-out">
                 <label for="user_name">Enter name</label>
                 <input type="text" class="form-control" id="user_name"placeholder="Your name">
             </div>
