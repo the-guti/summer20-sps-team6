@@ -88,7 +88,6 @@ public class PartyMusicPlayerServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long partyId;
         Action action;
-        System.out.println("doPost");
         try {
             partyId = Long.parseLong(Requests.getParameter(request, "party-id", null));
             action = Action.valueOf(Requests.getParameter(request, "action", ""));
@@ -106,7 +105,6 @@ public class PartyMusicPlayerServlet extends HttpServlet {
         PartySongPlayer currentPartyPlayer = Parties.getPartySongPlayer(partyId);
         switch (action) {
             case START_PLAYER:
-                System.out.println("STARTED");
                 currentPartyPlayer.startPlayer();
                 break;
             case STOP_PLAYER:
@@ -115,14 +113,12 @@ public class PartyMusicPlayerServlet extends HttpServlet {
             case ADD_SONG:
                 if (!Requests.hasParameterValue(request, "youtube-song-json")) {
                     response.setStatus(400);
-                    System.out.println("missing json param");
                     return;
                 }
                 try {
                     YoutubeSong youtubeSong = gson.fromJson(request.getParameter("youtube-song-json"), YoutubeSong.class);
                     currentPartyPlayer.addSong(youtubeSong);
                 } catch (Exception e) {
-                    System.out.println("ugly json");
                     response.setStatus(400);
                     return;
                 }

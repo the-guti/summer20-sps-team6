@@ -55,7 +55,7 @@ function getPartyId(){
 function syncManager(partyId){
     // Obtain playlist container to put songs
     const playlistContainer = document.getElementById('playlist-container');
-    const url = '/musicPlayer?party-id=' + id;
+    const url = '/musicPlayer?party-id=' + partyId;
     
     // Repeat evewrything inside every second
     window.setInterval(async function () {
@@ -105,7 +105,7 @@ function songSync(currentSongPlayInfo){
         console.log("Start time", currentSongPlayInfo.songStartGmtTimeMs);
         console.log("Duration", getDuration());
 
-        if(getDuration() != startTime){id
+        if(getDuration() != startTime){
             seekTo(startTime);
         }
         player.loadVideoById(videoId);
