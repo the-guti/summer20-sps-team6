@@ -36,7 +36,7 @@ function getPlaylist(id) { // can easily be extended to update the song using th
         url = '/musicPlayer?party-id=' + id;
         const response = await fetch(url);
         const partyPlaylistState = await response.json();
-        updateYoutubePlayer(partyPlaylistState.currentSongPlayInfo);
+        syncManager(partyPlaylistState);
 
         playlistContainer.innerHTML = "";
         const currentPlaylist = partyPlaylistState.currentPlaylist;
@@ -48,7 +48,7 @@ function getPlaylist(id) { // can easily be extended to update the song using th
             playlistContainer.appendChild(song);
         }
         playlistContainer.scrollTop = 9999999
-    }, 2000);
+    }, 1000);
 }
 
 function formatMsDurationAsMinutesAndSeconds(ms) {

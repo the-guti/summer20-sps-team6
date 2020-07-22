@@ -60,13 +60,12 @@ public class PartyMusicPlayerServlet extends HttpServlet {
         List<YoutubeSong> currentPlaylist = Parties.getPartySongPlayer(partyId).getCurrentPlaylist();
         PartyPlaylistState currentPlayerInfo = new PartyPlaylistState(currentSongInfo, currentPlaylist);
         if (currentSongInfo == null){
-            // response.setStatus(204);
-            response.setContentType("application/json;"); 
-            response.getWriter().println("{\"currentSongPlayInfo\":{\"song\":{\"songName\":\"J. Balvin - Rojo\",\"videoId\":\"5drPJOatAQg\",\"songDuration\":60000},\"songStartGmtTimeMs\":0,\"stopped\":true},\"currentPlaylist\":[{\"songName\":\"Queen - We Are The Champions\",\"videoId\":\"KXw8CRapg7k\",\"songDuration\":60000},{\"songName\":\"Queen - Radio Ga Ga\",\"videoId\":\"azdwsXLmrHE\",\"songDuration\":60000}]}"); 
+            response.setStatus(204);
+            //response.setContentType("application/json;"); 
+            //response.getWriter().println("{\"currentSongPlayInfo\":{\"song\":{\"songName\":\"J. Balvin - Rojo\",\"videoId\":\"5drPJOatAQg\",\"songDuration\":60000},\"songStartGmtTimeMs\":0,\"stopped\":true},\"currentPlaylist\":[{\"songName\":\"J. Balvin - Blanco \",\"videoId\":\"z5gqCIYVIcY\",\"songDuration\":30000},{\"songName\":\"Rosa \",\"videoId\":\"I6qLlbaOEYg\",\"songDuration\":60000}]}"); 
             /*"*/
             return;
         } else {
-            
             String songPlaylistStatusJson = gson.toJson(currentPlayerInfo);
             response.setContentType("application/json;");
             response.getWriter().println(songPlaylistStatusJson);
@@ -107,6 +106,7 @@ public class PartyMusicPlayerServlet extends HttpServlet {
         PartySongPlayer currentPartyPlayer = Parties.getPartySongPlayer(partyId);
         switch (action) {
             case START_PLAYER:
+                System.out.println("STARTED");
                 currentPartyPlayer.startPlayer();
                 break;
             case STOP_PLAYER:

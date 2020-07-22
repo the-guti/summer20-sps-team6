@@ -29,6 +29,7 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {  
     event.target.loadVideoById("XwxLwG2_Sxk");
+    actionPlayerServlet("START_PLAYER");
 }
 
 function onPlayerStateChange(event){
@@ -50,10 +51,6 @@ function getPartyId(){
     return urlParams.get('id');;
 }
 
-function startSyncManager(){
-    const partyId = getPartyId();
-    setInterval( function() { syncManager(partyId); }, 1000 );
-}
 
 async function syncManager(partyId){
     // Call the Servlet
@@ -85,18 +82,26 @@ async function syncManager(partyId){
     }
 }
 
-function updateYoutubePlayer(currentSongPlayInfo){
-    const videoId = currentSongPlayInfo.song.videoId;
-    console.log("update check videoId", currentSongPlayInfo.song.videoId);
+function syncManager(partyPlaylistState){
+    const videoId = partyPlaylistState.currentSongPlayInfo.song.videoId;
     // Check if same video
     if(player.getVideoData()['video_id'] != videoId){
+        const startTime = partyPlaylistState.currentSongPlayInfo.songStartGmtTimeMs;
         // Check time
-        /*if(false){
+        console.log("Stopped", partyPlaylistState.currentSongPlayInfo.stopped);
+        console.log("Start time", partyPlaylistState.currentSongPlayInfo.songStartGmtTimeMs);
+        console.log("Duration", getDuration());
+
+        if(getDuration() != startTime){
             seekTo(startTime);
-        }*/
+        }
         player.loadVideoById(videoId);
-        console.log("load video");
     }
+}
+
+function changeVolume(){
+    var volume = document.getElementById("volume").value;
+    player.setVolume(volume);
 }
 
 async function addSong(){
@@ -115,7 +120,6 @@ async function addSong(){
     videoId.innerHTML = "";
     songName.innerHTML = "";
     songDuration.innerHTML = "";
-
     url = `/musicPlayer?party-id=${partyId}&youtube-song-json=${JSON.stringify(youTubeSong)}&action=${action}`
         await fetch(encodeURI(url),
         {
@@ -133,7 +137,7 @@ async function addSong(){
 // START_PLAYER , STOP_PLAYER , SKIP_SONG
 async function actionPlayerServlet(action){
     var partyId = getPartyId();
-
+    
     url = `/musicPlayer?party-id=${partyId}&action=${action}`
         await fetch(encodeURI(url),
         {
