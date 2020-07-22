@@ -51,59 +51,91 @@ function getPartyId(){
     return urlParams.get('id');;
 }
 
-
-async function syncManager(partyId){
-    // Call the Servlet
-    const response = await fetch("/musicPlayer?party-id=" + partyId);
+// Function that manages communication with sync server
+function syncManager(partyId){
+    // Obtain playlist container to put songs
+    const playlistContainer = document.getElementById('playlist-container');
+    const url = '/musicPlayer?party-id=' + id;
     
-    switch (response.status) {
-        case 200:
-            // Get info, youtube song play info ( Youtube song (S songName /S videoId /L songDuration) / L songStartGmtTimeMs  / Bool stopped)
-            const currentYoutubeSongPlayInfo = await response.json();
-            
-            if(currentYoutubeSongPlayInfo.stopped){
-                // Play?
-            }else{
+    // Repeat evewrything inside every second
+    window.setInterval(async function () {
+        // Call Servlet
+        const response = await fetch(url);
 
-            }
-            
-            // Do action accordingly, call local player functions
-            //console.log(currentYoutubeSongPlayInfo);    
-            break;
-        case 400:
-            // Error message - If no room-id is given or a non-numeric room-id is given, return a 400 response code
-            break;
-        case 204:
-            // Error message  no songs
-            break;
-        default:
-            // Error
-            break;
-    }
+        switch (response.status) {
+            // All good
+            case 200: 
+                // Get Party playlist state (currentSongPlayInfo, currentPlaylist;)
+                const partyPlaylistState = await response.json();
+
+                // Update playlist
+                getPlaylist(playlistContainer, partyPlaylistState.currentPlaylist);
+
+                // Extract YoutubeSongPlayInfo( YoutubeSong song  / L songStartGmtTimeMs  / Bool stopped)
+                const currentYTSongPlayInfo = partyPlaylistState.currentSongPlayInfo;
+
+                // Extract Youtube song (S songName /S videoId /L songDuration)
+                const currentYTSong = currentYTSongPlayInfo.song;
+                songSync(currentYTSongPlayInfo);
+
+                break;
+            case 400:
+                // Error message - If no room-id is given or a non-numeric room-id is given, return a 400 response code
+                document.getElementById("errorMessage").innerHTML = "Wrong party";
+                break;
+            case 204:
+                // Error message  no songs
+                document.getElementById("errorMessage").innerHTML = "No songs in queue";
+                break;
+            default:
+                // Error
+                document.getElementById("errorMessage").innerHTML = "Lost communication with server, maybe its the aliens";
+                break;
+        }
+    }, 1000);
 }
 
-function syncManager(partyPlaylistState){
-    const videoId = partyPlaylistState.currentSongPlayInfo.song.videoId;
+function songSync(currentSongPlayInfo){
+    const videoId = currentSongPlayInfo.song.videoId;
     // Check if same video
     if(player.getVideoData()['video_id'] != videoId){
-        const startTime = partyPlaylistState.currentSongPlayInfo.songStartGmtTimeMs;
+        const startTime = currentSongPlayInfo.songStartGmtTimeMs;
         // Check time
-        console.log("Stopped", partyPlaylistState.currentSongPlayInfo.stopped);
-        console.log("Start time", partyPlaylistState.currentSongPlayInfo.songStartGmtTimeMs);
+        console.log("Stopped", currentSongPlayInfo.stopped);
+        console.log("Start time", currentSongPlayInfo.songStartGmtTimeMs);
         console.log("Duration", getDuration());
 
-        if(getDuration() != startTime){
+        if(getDuration() != startTime){id
             seekTo(startTime);
         }
         player.loadVideoById(videoId);
     }
 }
 
-function changeVolume(){
-    var volume = document.getElementById("volume").value;
-    player.setVolume(volume);
+function getPlaylist(playlistContainer, playlist) { 
+    playlistContainer.innerHTML = "";
+    const currentPlaylist = playlist;
+    for (let i = 0; i < currentPlaylist.length; i++) {
+        const song = document.createElement("P");
+        song.innerHTML = "<b>" + currentPlaylist[i].songName + "</b><br/>Duration: "
+            + formatMsDurationAsMinutesAndSeconds(currentPlaylist[i].songDuration);
+        song.classList.add("comment");
+        playlistContainer.appendChild(song);
+    }
+    playlistContainer.scrollTop = 9999999
 }
 
+// Helper function
+function formatMsDurationAsMinutesAndSeconds(ms) {
+    let minutes = Math.floor(ms/60/1000).toString();
+    let seconds = (Math.floor(ms/1000) % 60).toString();
+    if (seconds.length === 1) {
+        seconds = "0" + seconds;
+    }
+    return minutes + ":" + seconds;
+}
+
+// POST - ADD Song
 async function addSong(){
     const videoId = document.getElementById("song_id").value;
     const songName = document.getElementById("song_name").value;
@@ -134,7 +166,7 @@ async function addSong(){
         .catch(function(res){ console.log(res) })
 }
 
-// START_PLAYER , STOP_PLAYER , SKIP_SONG
+// POST -  START_PLAYER , STOP_PLAYER , SKIP_SONG
 async function actionPlayerServlet(action){
     var partyId = getPartyId();
     
@@ -151,6 +183,12 @@ async function actionPlayerServlet(action){
         .then(function(res){ console.log(res) })
         .catch(function(res){ console.log(res) })
 }
+
+function changeVolume(){
+    var volume = document.getElementById("volume").value;
+    player.setVolume(volume);
+}
+
 
 function getDuration(){
     return player.getDuration();
@@ -197,5 +235,3 @@ function buttonPlayPress() {
     }
     console.log("button play pressed, play was "+state);
 }
-
-// startSyncManager();

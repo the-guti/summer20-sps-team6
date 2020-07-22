@@ -29,37 +29,6 @@ function getComments(id) {
     }, 2000);
 }
 
-function getPlaylist(id) { // can easily be extended to update the song using the youtubePlayerController.js methods see below comment
-    // change the name to be update player if doing so
-    const playlistContainer = document.getElementById('playlist-container');
-    window.setInterval(async function () {
-        url = '/musicPlayer?party-id=' + id;
-        const response = await fetch(url);
-        const partyPlaylistState = await response.json();
-        syncManager(partyPlaylistState);
-
-        playlistContainer.innerHTML = "";
-        const currentPlaylist = partyPlaylistState.currentPlaylist;
-        for (let i = 0; i < currentPlaylist.length; i++) {
-            const song = document.createElement("P");
-            song.innerHTML = "<b>" + currentPlaylist[i].songName + "</b><br/>Duration: "
-                + formatMsDurationAsMinutesAndSeconds(currentPlaylist[i].songDuration);
-            song.classList.add("comment");
-            playlistContainer.appendChild(song);
-        }
-        playlistContainer.scrollTop = 9999999
-    }, 1000);
-}
-
-function formatMsDurationAsMinutesAndSeconds(ms) {
-    let minutes = Math.floor(ms/60/1000).toString();
-    let seconds = (Math.floor(ms/1000) % 60).toString();
-    if (seconds.length === 1) {
-        seconds = "0" + seconds;
-    }
-    return minutes + ":" + seconds;
-}
-
 function goToLatestComments(){
     const commentsContainer = document.getElementById('comments-container');
     commentsContainer.scrollTop = 9999999
@@ -67,7 +36,7 @@ function goToLatestComments(){
 
 function joinParty() {
     const partyId = document.getElementById("partyId").value;
-    if (partyId.length == 0) return;
+    if (partyId.length === 0) return;
     window.location.href = '/party.html?id=' + partyId;
 }
 
@@ -79,8 +48,8 @@ function loadParty() {
         .then(response => response.json())
         .then(data => {
             document.getElementById("partyName").innerHTML = data.partyName;
+            syncManager(data.id);
             getComments(data.id);
-            getPlaylist(data.id);
         });
 }
 
@@ -93,7 +62,6 @@ function showClass(className) {
         classElements[i].style.display = "block";
     }
 }
-
 async function sendComment() {
     let username;
     if ((await isUserLoggedIn()) && (await getCurrentUser())["display-name"] !== undefined) {
@@ -123,7 +91,6 @@ async function sendComment() {
         console.log("nothing to send")
     }
 }
-
 
 /**
  * function that returns after the set number of milliseconds
