@@ -32,6 +32,7 @@ function onPlayerReady(event) {
     actionPlayerServlet("START_PLAYER");
 }
 
+// state: -1 = unstarted, 0 = ended, 1 = playing video, 2 = paused,3 = buffering, 5 = video cued
 function onPlayerStateChange(event){
     console.log(getPlayerState());
     // Check if playing video ended
@@ -100,15 +101,20 @@ function songSync(currentSongPlayInfo){
     // Check if same video
     if(player.getVideoData()['video_id'] != videoId){
         const startTime = currentSongPlayInfo.songStartGmtTimeMs;
-        // Check time
-        console.log("Stopped", currentSongPlayInfo.stopped);
-        console.log("Start time", currentSongPlayInfo.songStartGmtTimeMs);
-        console.log("Duration", getDuration());
+        const currentTime = Date.now();
 
-        if(getDuration() != startTime){
-            seekTo(startTime);
+        console.log("Start time", currentSongPlayInfo.songStartGmtTimeMs);
+        
+        timeDif = 2+ (currentTime - startTime)/1000;
+        console.log("timeDif", timeDif);
+
+        // If song already playing then start song in appropiate time
+        if(startTime != 0 && startTime < currentTime){
+            // for some reasons there are 1.5 seconds of delay
+            player.loadVideoById(videoId, timeDif);
+        }else{ // First to get the video - Just load the video
+            player.loadVideoById(videoId);
         }
-        player.loadVideoById(videoId);
     }
 }
 
@@ -189,7 +195,12 @@ function changeVolume(){
     player.setVolume(volume);
 }
 
+// Returns the elapsed time in seconds since the video started playing.
+function getTimeElapsed(){
+    return player.getCurrentTime();
+}
 
+// Returns the duration in seconds of the currently playing video. 
 function getDuration(){
     return player.getDuration();
 }
