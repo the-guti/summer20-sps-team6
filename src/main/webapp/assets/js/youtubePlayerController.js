@@ -159,7 +159,7 @@ async function isServerPlayerStopped() {
 
 // POST - ADD Song
 async function addSong(videoId, songName, duration_seconds){
-    songName = songName.replace(/^[a-z\d\-_\s]+$/i, '')
+    songName = songName.replace(/[^\w\s]/gi, '')
     const songDurationMilliseconds = parseInt(duration_seconds) * 1000;
 
     var partyId = getPartyId();
@@ -251,7 +251,14 @@ function addSongHandler(id, title){
     fetch(uri)
             .then(response => response.json())
             .then(response => {
-                //console.log(response)
+                if(response.items === null){
+                    console.log("Null response")
+                    return
+                }
+                if(response.items && response.items.length < 1){
+                    console.log("Empty array")
+                    return
+                }
                 const duration = response.items[0].contentDetails.duration
                 console.log("Duration: ", duration)
                 // youtube uses a weird format for the duration, it needs to be formatted
