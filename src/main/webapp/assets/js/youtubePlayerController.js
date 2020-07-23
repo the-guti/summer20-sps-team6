@@ -159,7 +159,8 @@ async function isServerPlayerStopped() {
 
 // POST - ADD Song
 async function addSong(videoId, songName, duration_seconds){
-    const songDurationMilliseconds = duration_seconds * 1000;
+    songName = songName.replace(/^[a-z\d\-_\s]+$/i, '')
+    const songDurationMilliseconds = parseInt(duration_seconds) * 1000;
 
     var partyId = getPartyId();
     const action = "ADD_SONG";
@@ -262,6 +263,6 @@ function addSongHandler(id, title){
 
                 console.log("total: ", duration_seconds)
                 document.getElementById("search-results").innerHTML=""
-                addSong(id, title, duration)
+                addSong(id, title, duration_seconds)
             });
 }
