@@ -98,16 +98,15 @@ function syncManager(partyId){
 
 function songSync(currentSongPlayInfo){
     const videoId = currentSongPlayInfo.song.videoId;
+    const startTime = currentSongPlayInfo.songStartGmtTimeMs;
+    const currentTime = Date.now();
+        
+    // +3 seconds while video loads
+    timeDif = (currentTime - startTime)/1000;
+    console.log("timeDif", timeDif);
+    
     // Check if same video
     if(player.getVideoData()['video_id'] != videoId){
-        const startTime = currentSongPlayInfo.songStartGmtTimeMs;
-        const currentTime = Date.now();
-
-        console.log("Start time", currentSongPlayInfo.songStartGmtTimeMs);
-        
-        timeDif = 2+ (currentTime - startTime)/1000;
-        console.log("timeDif", timeDif);
-
         // If song already playing then start song in appropiate time
         if(startTime != 0 && startTime < currentTime){
             // for some reasons there are 1.5 seconds of delay
@@ -115,6 +114,8 @@ function songSync(currentSongPlayInfo){
         }else{ // First to get the video - Just load the video
             player.loadVideoById(videoId);
         }
+    }else if(startTime != 0 && startTime < currentTime){ // Same video, check sync
+        seekTo(timeDif);
     }
 }
 
