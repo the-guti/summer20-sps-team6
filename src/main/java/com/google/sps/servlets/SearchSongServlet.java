@@ -49,7 +49,7 @@ public class SearchSongServlet extends HttpServlet {
     /** Global instance of the max number of videos we want returned (50 = upper limit per page). */
     private static final long NUMBER_OF_VIDEOS_RETURNED = 5;
 
-    private static String apiKey = "";
+    private static String apiKey = "REPLACE_ME";
 
     /** Global instance of Youtube object to make all API requests. */
     private static YouTube youtube;

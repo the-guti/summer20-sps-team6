@@ -29,25 +29,16 @@
         <div id="player"></div>
         
         <h1 id="errorMessage"></h1>
-
-        <!--SEARCH-->
-        <h2>Add songs to queue</h2>
-        <div class="form-inline mt-2 mt-md-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Song name..." aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
-        </div>
         <!-- Volume control -->
         <label for="Volume">Volume</label>
         <input type="range" id="volume" name="volume" min="0" max="100" placeholder="100" onchange="changeVolume()">
-        <!-- Add Song-->
+        <!--SEARCH-->
         <h2>Add songs to queue</h2>
-        <div>
-            <textarea name="song_id" id="song_id" placeholder="Type the youtube id"></textarea>
-            <textarea name="song_name" id="song_name" placeholder="Type song name"></textarea>
-            <input type="number" id="song_duration" name="song_duration_seconds" min="1" placeholder="200"  max="10000">
-            <br/><br/>
-            <button class="btn btn-outline-success my-2 my-sm-0" onclick="addSong()">Add to Queue</button>
+        <div class="form-inline mt-2 mt-md-0">
+            <input id="search-query" class="form-control mr-sm-2" type="text" placeholder="Song name..." aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" onclick="searchSong()">Search</button>
         </div>
+        <div id="search-results" class="result-container"></div>
         <!--COMMENTS-->
         <h2>Comments</h2>
         <div id="comments-container"> </div>

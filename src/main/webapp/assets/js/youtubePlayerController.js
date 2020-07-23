@@ -158,10 +158,8 @@ async function isServerPlayerStopped() {
 }
 
 // POST - ADD Song
-async function addSong(){
-    const videoId = document.getElementById("song_id").value;
-    const songName = document.getElementById("song_name").value;
-    const songDurationMilliseconds = document.getElementById("song_duration").value * 1000;
+async function addSong(videoId, songName, duration_seconds){
+    const songDurationMilliseconds = duration_seconds * 1000;
 
     var partyId = getPartyId();
     const action = "ADD_SONG";
@@ -245,4 +243,25 @@ function seekTo(startTimeSec){
 // Stop the song first in the servlet, then check servelet status and stopin the player
 function stopVideo(){
     player.stopVideo();
+}
+
+function addSongHandler(id, title){
+    const uri = encodeURI(`https://www.googleapis.com/youtube/v3/videos?id=${id}&part=contentDetails&key=REPLACE_ME`)
+    fetch(uri)
+            .then(response => response.json())
+            .then(response => {
+                //console.log(response)
+                const duration = response.items[0].contentDetails.duration
+                console.log("Duration: ", duration)
+                // youtube uses a weird format for the duration, it needs to be formatted
+                const iso8601DurationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?/;
+                matches = duration.match(iso8601DurationRegex);
+                const num_seconds = matches[8] === undefined ? 0 : matches[8]
+                const num_minutes = matches[7] === undefined ? 0 : matches[7]
+                const duration_seconds = 60*parseInt(num_minutes) + parseInt(num_seconds)
+
+                console.log("total: ", duration_seconds)
+                document.getElementById("search-results").innerHTML=""
+                addSong(id, title, duration.toString())
+            });
 }
