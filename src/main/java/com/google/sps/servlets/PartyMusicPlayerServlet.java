@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.google.sps.data.PartyPlaylistState;
+import com.google.sps.data.PartyPlayerState;
 import com.google.sps.data.YoutubeSongPlayInfo;
 import com.google.sps.media.PartySongPlayer;
 import com.google.sps.media.YoutubeSong;
@@ -54,12 +54,10 @@ public class PartyMusicPlayerServlet extends HttpServlet {
             response.setStatus(400);
             return;
         } else if (!Parties.isPartyPlayerCreated(partyId)) {
-            Parties.createOrReplacePartySongPlayer(partyId);
+            Parties.createPartySongPlayer(partyId);
         }
-        YoutubeSongPlayInfo currentSongInfo = Parties.getPartySongPlayer(partyId).getCurrentSongInformation();
-        List<YoutubeSong> currentPlaylist = Parties.getPartySongPlayer(partyId).getCurrentPlaylist();
-        PartyPlaylistState currentPlayerInfo = new PartyPlaylistState(currentSongInfo, currentPlaylist);
-        if (currentSongInfo == null){
+        PartyPlayerState currentPlayerInfo = Parties.getPartySongPlayer(partyId).getPlayerState();
+        if (currentPlayerInfo == null) {
             response.setStatus(204);
             return;
         } else {
@@ -97,7 +95,7 @@ public class PartyMusicPlayerServlet extends HttpServlet {
             return;
         }
         if (!Parties.isPartyPlayerCreated(partyId)) {
-            Parties.createOrReplacePartySongPlayer(partyId);
+            Parties.createPartySongPlayer(partyId);
         }
         PartySongPlayer currentPartyPlayer = Parties.getPartySongPlayer(partyId);
         switch (action) {

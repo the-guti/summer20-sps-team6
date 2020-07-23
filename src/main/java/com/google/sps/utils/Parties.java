@@ -46,9 +46,11 @@ public class Parties {
     }
 
     /**
-     * Creates new PartySongPlayer for the party of given ID replacing the old player
+     * Creates new PartySongPlayer for the party of given ID
+     * if there is already a PartySongPlayer, this method is a no-op
+     * synchronized so that PartyPlayers won't be overwritten
      */
-    public static void createOrReplacePartySongPlayer(long partyId) {
-        partySongPlayers.put(partyId, new PartySongPlayer());
+    public static synchronized void createPartySongPlayer(long partyId) {
+        partySongPlayers.putIfAbsent(partyId, new PartySongPlayer());
     }
 }
