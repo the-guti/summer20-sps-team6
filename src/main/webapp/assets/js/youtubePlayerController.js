@@ -34,7 +34,6 @@ function onPlayerReady(event) {
 // state: -1 = unstarted, 0 = ended, 1 = playing video, 2 = paused,3 = buffering, 5 = video cued
 function onPlayerStateChange(event){
     const playerState = getPlayerState();
-    console.log(playerState);
     if(playerState === 2){
         actionPlayerServlet("STOP_PLAYER");
     }else if(playerState === 1 ){
@@ -58,7 +57,6 @@ function syncManager(partyId){
     window.setInterval(async function () {
         // Call Servlet
         const response = await fetch(url);
-        console.log(response);
 
         switch (response.status) {
             // All good
@@ -136,7 +134,6 @@ function getPlaylist(playlistContainer, playlist) {
         song.classList.add("comment");
         playlistContainer.appendChild(song);
     }
-    playlistContainer.scrollTop = 9999999
 }
 
 // Helper function
