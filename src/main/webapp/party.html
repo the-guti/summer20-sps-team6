@@ -37,14 +37,14 @@
             <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
         </div>
         <!-- Volume control -->
-        <label for="Volume">V</label>
+        <label for="Volume">Volume</label>
         <input type="range" id="volume" name="volume" min="0" max="100" placeholder="100" onchange="changeVolume()">
         <!-- Add Song-->
         <h2>Add songs to queue</h2>
         <div>
             <textarea name="song_id" id="song_id" placeholder="Type the youtube id"></textarea>
             <textarea name="song_name" id="song_name" placeholder="Type song name"></textarea>
-            <input type="number" id="song_duration" name="song_duration" min="1000" placeholder="3000"  max="10000000">
+            <input type="number" id="song_duration" name="song_duration_seconds" min="1" placeholder="200"  max="10000">
             <br/><br/>
             <button class="btn btn-outline-success my-2 my-sm-0" onclick="addSong()">Add to Queue</button>
         </div>

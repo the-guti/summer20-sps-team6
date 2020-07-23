@@ -31,14 +31,13 @@ function onPlayerReady(event) {
     // event.target.loadVideoById("XwxLwG2_Sxk");
     actionPlayerServlet("START_PLAYER");
 }
-
+a
 // state: -1 = unstarted, 0 = ended, 1 = playing video, 2 = paused,3 = buffering, 5 = video cued
 function onPlayerStateChange(event){
     console.log(getPlayerState());
 }
 
 function getPartyId(){
-    // Get party id 5910974510923776
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     return urlParams.get('id');;
@@ -136,11 +135,22 @@ function formatMsDurationAsMinutesAndSeconds(ms) {
     return minutes + ":" + seconds;
 }
 
+async function isServerPlayerStopped() {
+    const partyId = getPartyId();
+    const url = '/musicPlayer?party-id=' + partyId;
+    const response = await fetch(url);
+    if (response.status !== 200) {
+        return true;
+    }
+    const playerState = await response.json();
+    return playerState.currentSongPlayInfo.stopped;
+}
+
 // POST - ADD Song
 async function addSong(){
     const videoId = document.getElementById("song_id").value;
     const songName = document.getElementById("song_name").value;
-    const songDuration = document.getElementById("song_duration").value;
+    const songDurationMilliseconds = document.getElementById("song_duration").value * 1000;
 
     var partyId = getPartyId();
     const action = "ADD_SONG";
@@ -148,11 +158,11 @@ async function addSong(){
     const youTubeSong = new Object();
     youTubeSong.songName = songName;
     youTubeSong.videoId = videoId;
-    youTubeSong.songDuration = songDuration;
+    youTubeSong.songDuration = songDurationMilliseconds;
 
     videoId.innerHTML = "";
     songName.innerHTML = "";
-    songDuration.innerHTML = "";
+    songDurationMilliseconds.innerHTML = "";
     url = `/musicPlayer?party-id=${partyId}&youtube-song-json=${JSON.stringify(youTubeSong)}&action=${action}`
         await fetch(encodeURI(url),
         {
@@ -164,7 +174,10 @@ async function addSong(){
             body: "[]"  
         })
         .then(function(res){ console.log(res) })
-        .catch(function(res){ console.log(res) })
+        .catch(function(res){ console.log(res) });
+    if (await isServerPlayerStopped()) {
+        await actionPlayerServlet("START_PLAYER");
+    }
 }
 
 // POST -  START_PLAYER , STOP_PLAYER , SKIP_SONG

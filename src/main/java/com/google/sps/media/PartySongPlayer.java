@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
 
+import com.google.sps.data.PartyPlayerState;
 import com.google.sps.data.YoutubeSongPlayInfo;
 
 /**
@@ -24,7 +25,7 @@ public class PartySongPlayer {
         stoppedPlaybackTimeMs = 0;
     }
     
-    private long getCurrentGmtTimeMs() {
+    private synchronized long getCurrentGmtTimeMs() {
         return Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTimeInMillis();
     }
 
@@ -39,7 +40,8 @@ public class PartySongPlayer {
         }
         while (!playlist.isEmpty()) {
             YoutubeSong currentSong = playlist.peek();
-            if (getCurrentGmtTimeMs() - currentSongStartGmtTimeMs < currentSong.getSongDuration()) {
+            long gmtTime = getCurrentGmtTimeMs();
+            if (gmtTime - currentSongStartGmtTimeMs < currentSong.getSongDuration()) {
                 // Currently in the middle of playing this song, no update needed
                 return;
             } else {
@@ -105,8 +107,21 @@ public class PartySongPlayer {
      * Returns a copy of the current playlist of songs
      * The copy is sent so that changes to the playlist don't also effect this object
      */
-    public synchronized final List<YoutubeSong> getCurrentPlaylist() {
+    public synchronized List<YoutubeSong> getCurrentPlaylist() {
         return new ArrayList<>(playlist);
+    }
+
+    /**
+     * Returns the current state representation of the PartyPlayer, if the state is empty, return null
+     */
+    public synchronized PartyPlayerState getPlayerState() {
+        YoutubeSongPlayInfo currentSongPlayInfo = getCurrentSongInformation();
+        List<YoutubeSong> currentPlaylist = getCurrentPlaylist();
+        if (currentSongPlayInfo == null) {
+            return null;
+        } else {
+            return new PartyPlayerState(currentSongPlayInfo, currentPlaylist);
+        }
     }
 
     /**
@@ -130,6 +145,7 @@ public class PartySongPlayer {
      * adds a song to the end of the playlist
      */
     public synchronized void addSong(YoutubeSong song) {
+        updatePlayer();
         playlist.add(song);
     }
 

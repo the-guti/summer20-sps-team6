@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
  * The #1 use of this is for the PartyMusicPlayerServlet to be able to communicate a Player's state to a HTML requester
  */
 @AllArgsConstructor
-public class PartyPlaylistState {
+public class PartyPlayerState {
     private final YoutubeSongPlayInfo currentSongPlayInfo;
     private final List<YoutubeSong> currentPlaylist;
 }
