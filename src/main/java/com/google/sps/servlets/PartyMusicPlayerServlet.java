@@ -61,9 +61,6 @@ public class PartyMusicPlayerServlet extends HttpServlet {
         PartyPlaylistState currentPlayerInfo = new PartyPlaylistState(currentSongInfo, currentPlaylist);
         if (currentSongInfo == null){
             response.setStatus(204);
-            //response.setContentType("application/json;"); 
-            //response.getWriter().println("{\"currentSongPlayInfo\":{\"song\":{\"songName\":\"J. Balvin - Rojo\",\"videoId\":\"5drPJOatAQg\",\"songDuration\":60000},\"songStartGmtTimeMs\":0,\"stopped\":true},\"currentPlaylist\":[{\"songName\":\"J. Balvin - Blanco \",\"videoId\":\"z5gqCIYVIcY\",\"songDuration\":30000},{\"songName\":\"Rosa \",\"videoId\":\"I6qLlbaOEYg\",\"songDuration\":60000}]}"); 
-            /*"*/
             return;
         } else {
             String songPlaylistStatusJson = gson.toJson(currentPlayerInfo);

@@ -28,21 +28,13 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {  
-    event.target.loadVideoById("XwxLwG2_Sxk");
+    // event.target.loadVideoById("XwxLwG2_Sxk");
     actionPlayerServlet("START_PLAYER");
 }
 
 // state: -1 = unstarted, 0 = ended, 1 = playing video, 2 = paused,3 = buffering, 5 = video cued
 function onPlayerStateChange(event){
     console.log(getPlayerState());
-    // Check if playing video ended
-    /*if(getPlayerState() === 0){ 
-        currentVideoId++;
-        // Check if there are more videos in the queue
-        if(currentVideoId < videoIds.length){
-            player.loadVideoById(videoIds[currentVideoId]);
-        }
-    }*/
 }
 
 function getPartyId(){
@@ -62,6 +54,7 @@ function syncManager(partyId){
     window.setInterval(async function () {
         // Call Servlet
         const response = await fetch(url);
+        console.log(response);
 
         switch (response.status) {
             // All good
@@ -78,6 +71,8 @@ function syncManager(partyId){
                 // Extract Youtube song (S songName /S videoId /L songDuration)
                 const currentYTSong = currentYTSongPlayInfo.song;
                 songSync(currentYTSongPlayInfo);
+                
+                document.getElementById("errorMessage").innerHTML = "";
 
                 break;
             case 400:
@@ -101,21 +96,20 @@ function songSync(currentSongPlayInfo){
     const startTime = currentSongPlayInfo.songStartGmtTimeMs;
     const currentTime = Date.now();
         
-    // +3 seconds while video loads
-    timeDif = (currentTime - startTime)/1000;
-    console.log("timeDif", timeDif);
-    
-    // Check if same video
-    if(player.getVideoData()['video_id'] != videoId){
-        // If song already playing then start song in appropiate time
-        if(startTime != 0 && startTime < currentTime){
-            // for some reasons there are 1.5 seconds of delay
-            player.loadVideoById(videoId, timeDif);
-        }else{ // First to get the video - Just load the video
-            player.loadVideoById(videoId);
+    if(startTime === 0){
+        // Check if same video
+        if(player.getVideoData()['video_id'] != videoId){
+             player.loadVideoById(videoId);
         }
-    }else if(startTime != 0 && startTime < currentTime){ // Same video, check sync
-        seekTo(timeDif);
+        return;
+    }else{
+        correctTime = (currentTime - startTime)/1000;
+        timeDif = Math.abs(getTimeElapsed() - correctTime);
+        if(player.getVideoData()['video_id'] != videoId){
+            player.loadVideoById(videoId, correctTime);
+        }else if(timeDif > 1){
+            seekTo(correctTime);
+        }
     }
 }
 
