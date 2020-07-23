@@ -60,7 +60,7 @@ public class PartyMusicPlayerServlet extends HttpServlet {
         List<YoutubeSong> currentPlaylist = Parties.getPartySongPlayer(partyId).getCurrentPlaylist();
         PartyPlaylistState currentPlayerInfo = new PartyPlaylistState(currentSongInfo, currentPlaylist);
         if (currentSongInfo == null){
-            response.setStatus(200);
+            response.setStatus(204);
             return;
         } else {
             String songPlaylistStatusJson = gson.toJson(currentPlayerInfo);

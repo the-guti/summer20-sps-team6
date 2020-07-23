@@ -23,19 +23,30 @@
 
 <body onload="loadParty(); showLoginBasedContent();">
     <div id="header"></div>
-    <div id="content">
+    <div id="content" >
         <h1 id="partyName">Name of the party</h1>
         <!-- Player -->
         <div id="player"></div>
-        <!-- Play/Pause -->
-         <button type="button" id="button_play" class="btn" onclick='buttonPlayPress()'>
-             <i class="fa fa-play"></i>
-        </button>
+        
+        <h1 id="errorMessage"></h1>
+
         <!--SEARCH-->
         <h2>Add songs to queue</h2>
         <div class="form-inline mt-2 mt-md-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Song name..." aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+        </div>
+        <!-- Volume control -->
+        <label for="Volume">V</label>
+        <input type="range" id="volume" name="volume" min="0" max="100" placeholder="100" onchange="changeVolume()">
+        <!-- Add Song-->
+        <h2>Add songs to queue</h2>
+        <div>
+            <textarea name="song_id" id="song_id" placeholder="Type the youtube id"></textarea>
+            <textarea name="song_name" id="song_name" placeholder="Type song name"></textarea>
+            <input type="number" id="song_duration" name="song_duration" min="1000" placeholder="3000"  max="10000000">
+            <br/><br/>
+            <button class="btn btn-outline-success my-2 my-sm-0" onclick="addSong()">Add to Queue</button>
         </div>
         <!--COMMENTS-->
         <h2>Comments</h2>
@@ -59,7 +70,6 @@
         <h2>Playlist</h2>
         <div id="playlist-container"> </div>
     </div>
-
 
     <script src="assets/js/script.js"></script>
     <script src="assets/js/youtubePlayerController.js"></script>

@@ -19,6 +19,7 @@ Reggie - rfrank@sps-program.com
 * 3 - Add YT search, show title list of posible results and have a button to add to queue       - Karol
 * 3 - Show current songs in the queue (back/front end)                                          - Reggie
 
+* Change Volume V to icon
 * Error checking
 * Standardize java import order.
 * Optimize javascript import locations
