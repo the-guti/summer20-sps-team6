@@ -28,13 +28,17 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {  
-    // event.target.loadVideoById("XwxLwG2_Sxk");
     actionPlayerServlet("START_PLAYER");
 }
-a
+
 // state: -1 = unstarted, 0 = ended, 1 = playing video, 2 = paused,3 = buffering, 5 = video cued
 function onPlayerStateChange(event){
-    console.log(getPlayerState());
+    const playerState = getPlayerState();
+    if(playerState === 2){
+        actionPlayerServlet("STOP_PLAYER");
+    }else if(playerState === 1 ){
+        actionPlayerServlet("START_PLAYER");
+    }
 }
 
 function getPartyId(){
@@ -53,7 +57,6 @@ function syncManager(partyId){
     window.setInterval(async function () {
         // Call Servlet
         const response = await fetch(url);
-        console.log(response);
 
         switch (response.status) {
             // All good
@@ -67,8 +70,6 @@ function syncManager(partyId){
                 // Extract YoutubeSongPlayInfo( YoutubeSong song  / L songStartGmtTimeMs  / Bool stopped)
                 const currentYTSongPlayInfo = partyPlaylistState.currentSongPlayInfo;
 
-                // Extract Youtube song (S songName /S videoId /L songDuration)
-                const currentYTSong = currentYTSongPlayInfo.song;
                 songSync(currentYTSongPlayInfo);
                 
                 document.getElementById("errorMessage").innerHTML = "";
@@ -76,7 +77,7 @@ function syncManager(partyId){
                 break;
             case 400:
                 // Error message - If no room-id is given or a non-numeric room-id is given, return a 400 response code
-                document.getElementById("errorMessage").innerHTML = "Wrong party";
+                document.getElementById("errorMessage").innerHTML = "Invalid party";
                 break;
             case 204:
                 // Error message  no songs
@@ -94,6 +95,17 @@ function songSync(currentSongPlayInfo){
     const videoId = currentSongPlayInfo.song.videoId;
     const startTime = currentSongPlayInfo.songStartGmtTimeMs;
     const currentTime = Date.now();
+
+    // Local player stopped
+    if(getPlayerState() === 2){
+        // Server player still going
+        if(!currentSongPlayInfo.stopped){
+            playVideo();
+        }
+        return;
+    }else if(getPlayerState() === 1 && currentSongPlayInfo.stopped){// Local palyer is palying but server player is stopped
+        pauseVideo();
+    }
         
     if(startTime === 0){
         // Check if same video
@@ -106,7 +118,7 @@ function songSync(currentSongPlayInfo){
         timeDif = Math.abs(getTimeElapsed() - correctTime);
         if(player.getVideoData()['video_id'] != videoId){
             player.loadVideoById(videoId, correctTime);
-        }else if(timeDif > 1){
+        }else if(timeDif > 1){// Right video playing, wrong time by more than a second
             seekTo(correctTime);
         }
     }
@@ -122,7 +134,6 @@ function getPlaylist(playlistContainer, playlist) {
         song.classList.add("comment");
         playlistContainer.appendChild(song);
     }
-    playlistContainer.scrollTop = 9999999
 }
 
 // Helper function
