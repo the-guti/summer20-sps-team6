@@ -49,8 +49,12 @@ public class SearchSongServlet extends HttpServlet {
     /** Global instance of the max number of videos we want returned (50 = upper limit per page). */
     private static final long NUMBER_OF_VIDEOS_RETURNED = 5;
 
+    private static String apiKey = "";
+
     /** Global instance of Youtube object to make all API requests. */
     private static YouTube youtube;
+
+    private static Gson gson = new Gson();
 
   // Returns comments in JSON format
   @Override
@@ -68,7 +72,6 @@ public class SearchSongServlet extends HttpServlet {
     * non-authenticated requests (found under the Credentials tab at this link:
     * console.developers.google.com/). This is good practice and increased your quota.
     */
-    String apiKey = "X";
     search.setKey(apiKey);
     search.setQ(queryTerm);
     /*
@@ -84,42 +87,14 @@ public class SearchSongServlet extends HttpServlet {
     search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
     SearchListResponse searchResponse = search.execute();
 
+    String searchResultJson = "[]";
     List<SearchResult> searchResultList = searchResponse.getItems();
-
     if (searchResultList != null) {
-        prettyPrint(searchResultList.iterator(), queryTerm);
+        searchResultJson = gson.toJson(searchResultList);
     }
     
     response.setContentType("application/json; charset=UTF-8;");
     response.setCharacterEncoding("UTF-8");
-    response.getWriter().println("[{}]");
-  }
-
-  private static void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
-
-    System.out.println("\n=============================================================");
-    System.out.println(
-        "   First " + NUMBER_OF_VIDEOS_RETURNED + " videos for search on \"" + query + "\".");
-    System.out.println("=============================================================\n");
-
-    if (!iteratorSearchResults.hasNext()) {
-      System.out.println(" There aren't any results for your query.");
-    }
-
-    while (iteratorSearchResults.hasNext()) {
-
-      SearchResult singleVideo = iteratorSearchResults.next();
-      ResourceId rId = singleVideo.getId();
-
-      // Double checks the kind is video.
-      if (rId.getKind().equals("youtube#video")) {
-        Thumbnail thumbnail = singleVideo.getSnippet().getThumbnails().get("default");
-
-        System.out.println(" Video Id" + rId.getVideoId());
-        System.out.println(" Title: " + singleVideo.getSnippet().getTitle());
-        System.out.println(" Thumbnail: " + thumbnail.getUrl());
-        System.out.println("\n-------------------------------------------------------------\n");
-      }
-    }
+    response.getWriter().println(searchResultJson);
   }
 }
