@@ -6,7 +6,7 @@
     <groupId>com.google.sps</groupId>
     <artifactId>portfolio</artifactId>
     <version>1</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <properties>
         <!-- This project uses Java 8 -->
