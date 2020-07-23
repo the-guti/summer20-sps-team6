@@ -262,6 +262,6 @@ function addSongHandler(id, title){
 
                 console.log("total: ", duration_seconds)
                 document.getElementById("search-results").innerHTML=""
-                addSong(id, title, duration.toString())
+                addSong(id, title, duration)
             });
 }
