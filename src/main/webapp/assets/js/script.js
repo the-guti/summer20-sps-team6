@@ -154,3 +154,36 @@ async function getMsTimeInCurrentSong(partyId) {
     const currentYoutubeSongPlayInfo = await response.json();
     return Date.now() - currentYoutubeSongPlayInfo.currentSongPlayInfo.songStartGmtTimeMs;
 }
+
+async function searchSong(){
+    const query = document.getElementById("search-query").value
+    if(query.trim() === "") return
+    const uri = encodeURI("/search?q=" + query)
+    const resultsContainer = document.getElementById("search-results")
+    fetch(uri)
+            .then(response => response.json())
+            .then(results => {
+                resultsContainer.innerHTML = "";
+                for (let i = 0; i < results.length; i++) {
+                    const result = document.createElement("div");
+                    const songTitle = results[i].snippet.title
+                    const videoId = results[i].id.videoId
+
+                    const songTitleElement = document.createElement("p");
+                    songTitleElement.innerHTML = "<b>" + songTitle + "</b>"
+                    const addToQueueBtn = document.createElement("button");
+
+                    addToQueueBtn.innerHTML = "Add to Queue"
+                    addToQueueBtn.setAttribute('onclick', `addSongHandler('${videoId}', '${songTitle}')`);
+                    addToQueueBtn.classList.add("btn", "btn-outline-success", "my-2", "my-sm-0", "search-add-button")
+                    
+                    result.classList.add("search-result", "rounded");
+                    result.appendChild(songTitleElement)
+                    result.appendChild(addToQueueBtn)
+                    resultsContainer.appendChild(result);
+                }
+            });
+
+    //when onselect item
+    //document.getElementById("search-query").value
+}
